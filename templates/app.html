@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Шапка с гербом -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <svg width="50" height="60" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 2L2 8V18C2 26 15 38 15 38C15 38 28 26 28 18V8L15 2Z" fill="#D32F2F" stroke="#B71C1C" stroke-width="1.5"/>
+                    <circle cx="15" cy="15" r="4" fill="#FFD700" stroke="#B8860B" stroke-width="1"/>
+                    <path d="M15 2L15 8M15 38L15 30M2 8L8 11M28 8L22 11M2 18L9 18M28 18L21 18" stroke="#B71C1C" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <div>
+                    <h1>Администрация Глазовского района</h1>
+                    <p>Официальный сайт муниципального образования</p>
+                </div>
+            </div>
+            <div class="header-contacts">
+                <div class="contact-item">
+                    <strong>📞 +7 (34141) 2-25-75</strong>
+                    <span>приемная</span>
+                </div>
+                <div class="contact-item">
+                    <strong>✉️ info@glazov-raion.ru</strong>
+                </div>
+                <!-- Добавленная кнопка входа/панели администратора -->
+                <div class="contact-item">
+                    {% if logged_in %}
+                        <a href="{{ url_for('admin_panel') }}" style="color: white; text-decoration: none;">
+                            <strong>👤 Панель администратора</strong>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" style="color: white; text-decoration: none;">
+                            <strong>🔐 Вход</strong>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основное меню -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#" class="active">Главная</a></li>
+                <li><a href="#">О районе</a></li>
+                <li><a href="#">Администрация</a></li>
+                <li><a href="#">Документы</a></li>
+                <li><a href="#">Услуги</a></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container main-content">
+        <!-- Баннер с приветствием -->
+        <section class="hero">
+            <div class="hero-text">
+                <h2>Добро пожаловать на официальный портал</h2>
+                <p>Здесь вы можете найти актуальную информацию о деятельности администрации, структуре, контактах и оказываемых услугах.</p>
+                <a href="#" class="btn">Записаться на прием →</a>
+            </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='photo.png') }}" alt="Администрация Глазовского района" style="max-width: 100%; border-radius: 10px;">
+            </div>
+        </section>
+
+        <!-- Карточки с быстрыми ссылками -->
+        <section class="quick-links">
+            <div class="card">
+                <h3>📋 Муниципальные услуги</h3>
+                <p>Перечень услуг в электронном виде</p>
+            </div>
+            <div class="card">
+                <h3>📅 График приема</h3>
+                <p>Запись к руководителям</p>
+            </div>
+            <div class="card">
+                <h3>📢 Объявления</h3>
+                <p>Важная информация для жителей</p>
+            </div>
+            <div class="card">
+                <h3>📁 Документы</h3>
+                <p>Постановления и распоряжения</p>
+            </div>
+        </section>
+
+        <!-- Две колонки: контакты и структура -->
+        <div class="two-columns">
+            <!-- Левая колонка: контактная информация -->
+            <section class="contact-info card-large">
+                <h2>Контактная информация</h2>
+                <div class="info-block">
+                    <h3>🏢 Адрес</h3>
+                    <p>{{ data.address }}</p>
+                </div>
+                <div class="info-block">
+                    <h3>📞 Телефоны</h3>
+                    <p><strong>Приемная:</strong> {{ data.phone_main }}</p>
+                    <p><strong>Глава района:</strong> {{ data.phone_fax }}</p>
+                    <p><strong>Факс:</strong> +7 (34141) 2-25-58</p>
+                </div>
+                <div class="info-block">
+                    <h3>✉️ Электронная почта</h3>
+                    <p><a href="mailto:admin@glazov-raion.ru">admin@glazov-raion.ru</a></p>
+                </div>
+                <div class="info-block">
+                    <h3>🕒 Режим работы</h3>
+                    <p>{{ data.work_hours }}</p>
+                    <p>Суббота, Воскресенье: выходной</p>
+                </div>
+            </section>
+
+            <!-- Правая колонка: структура и отделы -->
+            <section class="departments card-large">
+                <h2>Структура администрации</h2>
+                <p class="dept-note">Отделы и контактные телефоны:</p>
+                <div class="departments-grid">
+                    {% for dept in data.departments %}
+                    <div class="dept-item">
+                        <strong>{{ dept.name }}</strong>
+                        <span class="dept-phone">{{ dept.phone }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <!-- Блок с полезными ссылками (как на странице) -->
+        <section class="related-links">
+            <h2>Другие администрации района</h2>
+            <div class="links-grid">
+                <a href="#">Администрация Сарапула</a>
+                <a href="#">Управление соцзащиты Игринского района</a>
+                <a href="#">Администрация Воткинска</a>
+                <a href="#">Администрация Завьяловского района</a>
+                <a href="#">Администрация Увинского района</a>
+                <a href="#">Администрация Дебесского района</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Подвал -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div>
+                <p>© 2024 Администрация муниципального образования "Глазовский район"</p>
+                <p>Официальный сайт. Все права защищены.</p>
+            </div>
+            <div>
+                <p>427620, Удмуртская Республика, г. Глазов, ул. Молодой Гвардии, 22а</p>
+                <p>Телефон: +7 (34141) 2-25-75 | Факс: +7 (34141) 2-25-58</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
